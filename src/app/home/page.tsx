@@ -3,7 +3,7 @@ import CardBarber from "@/components/CardBarber";
 import NavbarLandpage from "@/components/NavbarLandpage";
 import PerfilButton from "@/components/PerfilButton";
 import SchedulingPanel from "@/components/SchedulingPanel";
-import { DrawerDialogDemo } from "@/components/DrawerAgendamento";
+import { DialogDemo } from "@/components/DrawerAgendamento";
 
 export default async function Home() {
   // const session = await getServerSession(authOptions);
@@ -41,27 +41,37 @@ export default async function Home() {
             <h2 className="text-2xl font-semibold text-white">
               Barbeiros cadastrados
             </h2>
-            <DrawerDialogDemo />
             <div
               className="flex aling-center justify-center gap-5 flex-wrap w-full p-8 rounded-xl
                   bg-stone-950/50 border border-white/10
                   backdrop-blur-lg shadow-lg"
             >
-              <CardBarber />
-              <CardBarber />
-              <CardBarber />
-              <CardBarber />
-              <CardBarber />
-              <CardBarber />
-              <CardBarber />
-              <CardBarber />
+              {[
+                {
+                  id: "64a1a1a1a1a1a1a1a1a1a1a1",
+                  name: "João",
+                  avatar: "https://avatar.vercel.sh/shadcn1",
+                  status: "Online",
+                  description: "Cortes clássicos e modernos.",
+                },
+                {
+                  id: "64b2b2b2b2b2b2b2b2b2b2b2",
+                  name: "Carlos",
+                  avatar: "https://avatar.vercel.sh/shadcn2",
+                  status: "Online",
+                  description: "Especialista em fades.",
+                },
+                {
+                  id: "64c3c3c3c3c3c3c3c3c3c3c3",
+                  name: "Pedro",
+                  avatar: "https://avatar.vercel.sh/shadcn3",
+                  status: "Offline",
+                  description: "Barbeiro experiente.",
+                },
+              ].map((b) => (
+                <CardBarber key={b.id} barber={b} />
+              ))}
             </div>
-          </div>
-          <div className="w-full mt-6">
-            <h2 className="text-2xl font-semibold text-white mb-3">
-              Agendar Horário
-            </h2>
-            <SchedulingPanel />
           </div>
         </div>
       </main>

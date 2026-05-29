@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HorarioGrid from "./HorarioGrid";
+import { Button } from "./ui/button";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -12,10 +13,18 @@ const queryClient = new QueryClient({
   },
 });
 
-export default function SchedulingPanel() {
+type SchedulingPanelProps = {
+  initialProfissionalId?: string;
+  initialDate?: string;
+};
+
+export default function SchedulingPanel({
+  initialProfissionalId,
+  initialDate,
+}: SchedulingPanelProps) {
   const [date, setDate] = useState<string>(() => {
     const d = new Date();
-    return d.toISOString().slice(0, 10); // YYYY-MM-DD
+    return initialDate ?? d.toISOString().slice(0, 10); // YYYY-MM-DD
   });
   const [profissional, setProfissional] = useState<string>("");
   const [duration, setDuration] = useState<number>(30);
@@ -27,10 +36,17 @@ export default function SchedulingPanel() {
     { id: "64b2b2b2b2b2b2b2b2b2b2b2", name: "Carlos" },
   ];
 
+  // Set initial profissional if provided
+  React.useEffect(() => {
+    if (initialProfissionalId) {
+      setProfissional(initialProfissionalId);
+    }
+  }, [initialProfissionalId]);
+
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="w-full p-4 bg-stone-950/40 rounded-lg">
-        <div className="flex gap-3 items-center mb-4">
+      <div className=" flex flex-col flex-wrap w-full p-4 bg-stone-950/40 rounded-lg">
+        <div className="flex flex-wrap gap-3 items-center mb-4">
           <label className="text-sm text-gray-300">Data:</label>
           <input
             className="p-2 rounded bg-white/5 text-white"
@@ -77,6 +93,62 @@ export default function SchedulingPanel() {
 
         <div className="mt-4 text-sm text-gray-300">
           Selecionado: {selected ?? "—"}
+        </div>
+        <div className="mt-4 flex gap-2">
+          <Button
+            onClick={async () => {
+              if (!profissional) {
+                alert("Selecione um profissional.");
+                return;
+              }
+              if (!selected) {
+                alert("Selecione um horário.");
+                return;
+              }
+
+              // Construir ISO simplificado (UTC) — ajuste conforme necessidade de timezone
+              const iso = `${date}T${selected}:00.000Z`;
+
+              try {
+                const res = await fetch("/api/agendamentos", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    profissionalId: profissional,
+                    dataHora: iso,
+                  }),
+                });
+
+                if (res.status === 401) {
+                  alert("Você precisa estar logado para agendar.");
+                  window.location.href = "/login";
+                  return;
+                }
+
+                if (res.status === 409) {
+                  const body = await res.json();
+                  alert(
+                    body?.error ??
+                      "Horário já reservado. Atualize e tente outro horário.",
+                  );
+                  return;
+                }
+
+                if (!res.ok) {
+                  const body = await res.json().catch(() => ({}));
+                  alert(body?.error ?? "Erro ao criar agendamento");
+                  return;
+                }
+
+                alert("Agendamento criado com sucesso!");
+              } catch (err) {
+                console.error(err);
+                alert("Erro ao conectar ao servidor");
+              }
+            }}
+          >
+            Confirmar agendamento
+          </Button>
         </div>
       </div>
     </QueryClientProvider>

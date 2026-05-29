@@ -54,7 +54,7 @@ export default function HorarioGrid({
     );
 
   return (
-    <div className={`grid grid-cols-1 sm:grid-cols-${columns} gap-2`}>
+    <div className={`grid grid-cols-6 sm:grid-cols-${columns} gap-2`}>
       {slots.map((time) => {
         const isOcupado = ocupados.includes(time);
         const isSelected = selected === time;
