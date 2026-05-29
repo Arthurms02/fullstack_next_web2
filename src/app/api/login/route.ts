@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
+import { loginUser } from "@/app/login/_actions/loginAction";
 
 
 export async function POST(request: Request) {
   try {
     const payload = await request.json();
-    // Aqui você pode adicionar validação do payload usando zod ou outra biblioteca
-    // E depois chamar um serviço para autenticar o usuário
+    await loginUser(payload);
     return NextResponse.json({ message: 'Login successful' }, { status: 200 });
   } catch (error) {
     console.error('Error during login:', error);

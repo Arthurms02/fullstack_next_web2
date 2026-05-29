@@ -13,7 +13,9 @@ export default function LandingPage() {
     <>
       <AnimatedBackground />
       <div className="flex flex-col align-items-center justify-center gap-32">
-        <NavbarLandpage />
+        <NavbarLandpage className="flex items-center justify-center mx-10 mt-10 p-2 rounded-md
+                      bg-stone-950/50 border border-white/[0.08] backdrop-blur-xl
+                      shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.5)]" />
         <Animation />
         <div className="flex items-center justify-center gap-4 mb-10">
           <PrimaryButton texto="Agendar" />

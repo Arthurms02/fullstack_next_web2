@@ -1,10 +1,8 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
 
 import AnimetedBackground from '@/components/AnimatedBackground';
 import CardBarber from '@/components/CardBarber';
 import NavbarLandpage from '@/components/NavbarLandpage';
+import PerfilButton from '@/components/PerfilButton';
 
 export default async function Home() {
   // const session = await getServerSession(authOptions);
@@ -17,7 +15,11 @@ export default async function Home() {
     <>
      <AnimetedBackground />
       <main className="flex flex-col items-center justify-center min-h-screen">
-          <NavbarLandpage />
+          <NavbarLandpage className="flex items-center justify-between px-6 py-3 w-full
+                      bg-stone-950/50 border border-white/[0.08] backdrop-blur-xl
+                      shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.5)]">
+            <PerfilButton />
+          </NavbarLandpage>
         <div
           className="flex flex-col gap-3 w-full mx-10 p-8 bg-stone-900/40
                   backdrop-blur-lg shadow-lg"
