@@ -1,6 +1,26 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Rye, Roboto} from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+import { SessionProviders } from "@/providers/SessionProviders";
+import { Toaster } from "@/components/ui/sonner"
+import { TooltipProvider } from "@/components/ui/tooltip"
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+
+const roboto = Roboto({
+  weight: '700',
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-roboto',
+});
+
+const rye = Rye({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-rye',
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,11 +43,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
-    </html>
+    <SessionProviders>
+      <html
+        lang="en"
+        className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable, rye.variable, roboto.variable )}
+      >
+        <body className="min-h-full flex flex-col">
+          <TooltipProvider>
+          {children}
+          <Toaster richColors/>
+          </TooltipProvider>
+        </body>
+      </html>
+    </SessionProviders>
   );
 }
