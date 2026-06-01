@@ -1,5 +1,3 @@
-
-
 import Logo from "./Logo";
 
 interface NavbarLandpageProps {

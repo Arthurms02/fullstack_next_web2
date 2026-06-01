@@ -26,9 +26,9 @@ export default function AnimatedText() {
           loop
         />
       </motion.div>
-      <motion.div className="mx-10 flex flex-col items-center justify-center gap-2 text-xs text-center font-medium">
-        <h2 className="flex w-100 text-2xl font-bold text-white flex-wrap">
-          Encontre o barbeiro perfeito para você, agende seu horário online, sem complicações,
+      <motion.div className="mx-10 flex flex-col items-center justify-center text-xs text-center font-medium">
+        <h2 className="flex w-120 mx-auto text-2xl font-bold text-white flex-wrap">
+          Encontre o barbeiro perfeito para você, agende seu horário online, sem complicações.
         </h2>
       </motion.div>
 
