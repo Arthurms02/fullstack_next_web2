@@ -1,8 +1,7 @@
-import AnimetedBackground from "@/components/AnimatedBackground";
-import CardBarber from "@/components/CardBarber";
+import CardBarber from "./_components/CardBarber";
 import { DropdownMenuPerfil } from "@/components/DropdownMenuPerfil";
 import NavbarLandpage from "@/components/NavbarLandpage";
-import PerfilButton from "@/components/PerfilButton";
+
 
 export default async function Home() {
   // const session = await getServerSession(authOptions);
@@ -62,6 +61,13 @@ export default async function Home() {
                 {
                   id: "64c3c3c3c3c3c3c3c3c3c3c3",
                   name: "Pedro",
+                  avatar: "https://avatar.vercel.sh/shadcn3",
+                  status: "Offline",
+                  description: "Barbeiro experiente.",
+                },
+                {
+                  id: "64c3c3c3c3c3c3c3c3c4c3c3",
+                  name: "Jorge",
                   avatar: "https://avatar.vercel.sh/shadcn3",
                   status: "Offline",
                   description: "Barbeiro experiente.",

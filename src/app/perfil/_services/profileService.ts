@@ -2,15 +2,13 @@ import { ProfileSchemaType } from '../_schemas/profileSchema';
 import dbConnect from '@/lib/db';
 import Profile from '@/models/Profile';
 import Barbeiro from '@/models/Barbeiro';
-import { toast } from 'sonner';
 
 export async function updateProfileService(payload: ProfileSchemaType, userId?: string){
   await dbConnect();
 
   try {
     if (!userId) {
-      toast.error('Usuário não autenticado',{ position: 'top-center' });
-      return;
+      throw new Error('Usuário não autenticado');
     }
 
     // Update or create profile
@@ -49,11 +47,9 @@ export async function updateProfileService(payload: ProfileSchemaType, userId?: 
       }
     }
 
-    toast.success('Perfil atualizado com sucesso',{ position: 'top-center' });
     return profile;
   } catch (err) {
     console.error('Erro ao atualizar perfil', err);
-    toast.error('Erro ao atualizar perfil',{ position: 'top-center' });
     throw err;
   }
 }

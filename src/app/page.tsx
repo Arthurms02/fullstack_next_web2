@@ -1,11 +1,8 @@
-
-
-import AnimatedBackground from '@/components/AnimatedBackground';
 import Animation from '@/components/AnimatedText';
 import PrimaryButton from '@/components/PrimaryButton';
 import SecundaryButton from '@/components/SecundaryButton';
 import NavbarLandpage from '@/components/NavbarLandpage';
-import Link from 'next/dist/client/link';
+
 
 
 

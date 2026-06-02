@@ -1,17 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HorarioGrid from "./HorarioGrid";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 2, // 2 minutos
-    },
-  },
-});
 
 type SchedulingPanelProps = {
   initialProfissionalId?: string;
@@ -44,7 +36,6 @@ export default function SchedulingPanel({
   }, [initialProfissionalId]);
 
   return (
-    <QueryClientProvider client={queryClient}>
       <div className=" flex flex-col flex-wrap w-full p-4 bg-stone-950/40 rounded-lg">
         <div className="flex flex-wrap gap-3 items-center mb-4">
           <label className="text-sm text-gray-300">Data:</label>
@@ -151,6 +142,5 @@ export default function SchedulingPanel({
           </Button>
         </div>
       </div>
-    </QueryClientProvider>
   );
 }

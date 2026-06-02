@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "./ui/button";
 import {
   Card,
   CardAction,
@@ -8,9 +7,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/card";
-import { Badge } from "./ui/badge";
-import { DialogDemo } from "@/components/DrawerAgendamento";
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { DialogDemo } from "./DrawerAgendamento";
 
 type Barber = {
   id: string;
@@ -33,7 +32,7 @@ export default function CardBarber({ barber }: { barber?: Barber }) {
     <Card className="relative mx-auto w-full max-w-sm pt-0">
       <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
       <img
-        src={b.avatar}
+        src={b.avatar || "https://avatar.vercel.sh/shadcn1"}
         alt={b.name}
         className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
       />

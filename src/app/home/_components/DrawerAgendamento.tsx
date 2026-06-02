@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import SchedulingPanel from "@/components/SchedulingPanel";
+import SchedulingPanel from "./SchedulingPanel";
 
 type DialogDemoProps = {
   profissionalId?: string;

@@ -89,17 +89,32 @@ export default function PerfilFormClient() {
         data.avatar = json.url;
       }
 
-      const res = await fetch("/api/perfil", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-      const json = await res.json();
-      if (!res.ok) throw new Error(json?.error || "Erro");
-      toast.success("Perfil atualizado com sucesso", {
-        position: "top-center",
-      });
+      try {
+        const res = await fetch("/api/perfil", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+          signal: controller.signal,
+        });
+
+        const json = await res.json();
+        if (!res.ok) throw new Error(json?.error || "Erro");
+        toast.success("Perfil atualizado com sucesso", {
+          position: "top-center",
+        });
+      } catch (err: any) {
+        if (err?.name === "AbortError") {
+          toast.error("Tempo de conexão excedido", { position: "top-center" });
+        } else {
+          console.error(err);
+          toast.error("Erro ao atualizar perfil", { position: "top-center" });
+        }
+      } finally {
+        clearTimeout(timeoutId);
+      }
     } catch (err: any) {
       console.error(err);
       toast.error("Erro ao atualizar perfil", { position: "top-center" });
@@ -371,7 +386,7 @@ export default function PerfilFormClient() {
           <Input
             {...register("specialties")}
             placeholder="Ex.: Corte degradê, Barba, Coloração..."
-            className="bg-stone-500/50"
+            className="bg-stone-500/50 rounded-md"
           />
           <PrimaryButton type="button" className="py-2 px-4">
             Adicionar
