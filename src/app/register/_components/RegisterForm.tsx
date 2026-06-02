@@ -84,6 +84,20 @@ export function RegisterForm({
           )}
         />
         <Controller
+          name="role"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="role">Tipo de conta</FieldLabel>
+              <NativeSelect id="role" className="w-full" {...field}>
+                <NativeSelectOption value="client">Cliente</NativeSelectOption>
+                <NativeSelectOption value="barber">Barbeiro</NativeSelectOption>
+              </NativeSelect>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
           name="password"
           control={form.control}
           render={({ field, fieldState }) => (

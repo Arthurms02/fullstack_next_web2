@@ -22,6 +22,7 @@ export async function registerUserService(payload: RegisterAuthSchemaType) {
       name: payload.name,
       email: payload.email,
       password: hashedPassword,
+      role: payload.role,
     });
   } catch (err: any) {
     if (err?.code === 11000) {

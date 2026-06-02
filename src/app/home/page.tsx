@@ -7,17 +7,17 @@ import CardBarber from '@/components/CardBarber';
 import NavbarLandpage from '@/components/NavbarLandpage';
 
 export default async function Home() {
-  // const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
 
-  // if (!session) {
-  //   redirect('/login');
-  // }
+  if (!session) {
+    redirect('/login');
+  }
 
   return (
     <>
      <AnimetedBackground />
       <main className="flex flex-col items-center justify-center min-h-screen">
-          <NavbarLandpage />
+          <NavbarLandpage showLogout />
         <div
           className="flex flex-col gap-3 w-full mx-10 p-8 bg-stone-900/40
                   backdrop-blur-lg shadow-lg"

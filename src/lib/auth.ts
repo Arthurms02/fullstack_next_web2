@@ -28,7 +28,12 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Senha incorreta");
         }
         // Retorna apenas os campos necessários para a sessão podendo ser personalizado conforme a necessidade de ROLEs ou outras informações
-        return { id: user._id.toString(), name: user.name, email: user.email };
+        return {
+          id: user._id.toString(),
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        };
       },
     }),
   ],
@@ -40,9 +45,16 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
+    },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).id = token.sub;
+        session.user.id = token.sub ?? "";
+        session.user.role = token.role;
       }
       return session;
     }
