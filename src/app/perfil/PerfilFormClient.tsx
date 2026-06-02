@@ -2,20 +2,26 @@
 
 import React, { useState, useRef } from "react";
 import { toast } from "sonner";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema, ProfileSchemaType } from "./_schemas/profileSchema";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import PrimaryButton from "@/components/PrimaryButton";
 
+
 export default function PerfilFormClient() {
-  const form = useForm<ProfileSchemaType>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    control,
+  } = useForm<ProfileSchemaType>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: "",
       cpf: "",
-      rg: "",
       birthDate: "",
       phone: "",
       email: "",
@@ -25,17 +31,17 @@ export default function PerfilFormClient() {
       address: "",
       number: "",
       complement: "",
-      specialties: "",
+      specialties: [],
       bio: "",
     },
   });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = form;
+  const { fields, append, remove } = useFieldArray({
+    control: control,
+    name: "specialties",
+  });
+
+  const MAX_SPECIALTIES = 3;
   const bio = watch("bio") || "";
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -152,7 +158,7 @@ export default function PerfilFormClient() {
   }
 
   return (
-    <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <section className="rounded-xl p-6 bg-stone-500/10 border border-white/10 backdrop-blur-lg shadow-lg">
         <div className="flex gap-6 items-center">
           <div className="w-28 h-28 rounded-md bg-amber-500 flex items-center justify-center text-2xl font-bold text-stone-900">
@@ -241,18 +247,6 @@ export default function PerfilFormClient() {
             {errors.cpf && (
               <p className="text-sm text-rose-400 mt-1">
                 {errors.cpf.message as string}
-              </p>
-            )}
-          </div>
-          <div>
-            <Input
-              {...register("rg")}
-              placeholder="RG"
-              className="bg-stone-500/50"
-            />
-            {errors.rg && (
-              <p className="text-sm text-rose-400 mt-1">
-                {errors.rg.message as string}
               </p>
             )}
           </div>
@@ -377,21 +371,45 @@ export default function PerfilFormClient() {
 
       <section className="rounded-xl p-6 bg-stone-500/10 border border-white/10 backdrop-blur-lg shadow-lg">
         <h3 className="text-md font-semibold text-white mb-2">
-          Especialidades
+          Serviços
         </h3>
         <p className="text-sm text-stone-300 mb-4">
-          Adicione suas especialidades. Elas aparecem no seu perfil público.
+          Adicione seus serviços. Eles aparecem no seu perfil público.
         </p>
-        <div className="flex gap-3">
-          <Input
-            {...register("specialties")}
-            placeholder="Ex.: Corte degradê, Barba, Coloração..."
-            className="bg-stone-500/50 rounded-md"
-          />
-          <PrimaryButton type="button" className="py-2 px-4">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-3 mb-2 items-center">
+            <Input
+              {...register(`specialties.${index}.servico`)}
+              placeholder="Serviço (ex: Corte degradê)"
+              className="bg-stone-500/50 w-100"
+            />
+            <Input
+              {...register(`specialties.${index}.duracao`)}
+              placeholder="Duração (min)"
+              className="bg-stone-500/50 w-50"
+            />
+            <PrimaryButton
+              type="button"
+              className="py-1 px-3 bg-red-500"
+              onClick={() => remove(index)}
+            >
+              Remover
+            </PrimaryButton>
+          </div>
+        ))}
+        {fields.length < MAX_SPECIALTIES ? (
+          <PrimaryButton
+            type="button"
+            className="py-1 px-3 bg-green-500"
+            onClick={() => append({ servico: "", duracao: "" })}
+          >
             Adicionar
           </PrimaryButton>
-        </div>
+        ) : (
+          <div className="text-sm text-stone-400 mt-2">
+            Limite de {MAX_SPECIALTIES} especialidades atingido
+          </div>
+        )}
       </section>
 
       <section className="rounded-xl p-6 bg-stone-500/10 border border-white/10 backdrop-blur-lg shadow-lg">

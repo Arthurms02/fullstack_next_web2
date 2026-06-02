@@ -1,6 +1,7 @@
 import {
   LogOutIcon,
   User,
+  House,
   ChartNoAxesCombined,
 } from "lucide-react"
 
@@ -27,6 +28,11 @@ export function DropdownMenuPerfil() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-stone-950/50 border text-white border-white/[0.08] backdrop-blur-xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.5)]">
+        <DropdownMenuItem>
+          <Link href="/home" className="flex items-center gap-2 w-full">
+            <House />Home
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <Link href="/perfil" className="flex items-center gap-2 w-full">
             <User />Perfil

@@ -1,7 +1,14 @@
+import { redirect } from "next/dist/client/components/navigation";
 import PerfilFormClient from "./PerfilFormClient";
+import Navbar from "@/components/Navbar";
 
 export default function Perfil() {
+  function onSubmit(){
+    redirect('/home');
+  }
   return (
+    <>
+    <Navbar />
     <main className="min-h-screen w-full py-12 bg-stone-900/40 backdrop-blur-lg shadow-lg">
       <div className="mx-auto w-[85%] max-w-6xl">
         <div className="flex justify-between items-center mb-6">
@@ -12,5 +19,6 @@ export default function Perfil() {
         <PerfilFormClient />
       </div>
     </main>
+    </>
   );
 }

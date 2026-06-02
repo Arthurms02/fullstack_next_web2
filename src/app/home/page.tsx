@@ -1,6 +1,5 @@
 import CardBarber from "./_components/CardBarber";
-import { DropdownMenuPerfil } from "@/components/DropdownMenuPerfil";
-import NavbarLandpage from "@/components/NavbarLandpage";
+import Navbar from "@/components/Navbar";
 
 
 export default async function Home() {
@@ -13,13 +12,7 @@ export default async function Home() {
   return (
     <>
       <main className="flex flex-col items-center justify-center min-h-screen">
-        <NavbarLandpage
-          className="flex items-center justify-between px-6 py-3 w-full
-                      bg-stone-950/50 border border-white/[0.08] backdrop-blur-xl
-                      shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.5)]"
-        >
-          <DropdownMenuPerfil />
-        </NavbarLandpage>
+      <Navbar />
         <div
           className="flex flex-col gap-3 w-full mx-10 p-8 bg-stone-900/40
                   backdrop-blur-lg shadow-lg"

@@ -4,8 +4,6 @@ import SecundaryButton from '@/components/SecundaryButton';
 import NavbarLandpage from '@/components/NavbarLandpage';
 
 
-
-
 export default function LandingPage() {
   return (
     <>
@@ -13,10 +11,8 @@ export default function LandingPage() {
         <NavbarLandpage className="flex items-center justify-between mx-20 mt-10 px-6 py-2 rounded-md
                       bg-stone-950/50 border border-white/[0.08] backdrop-blur-xl
                       shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.5)]" >
-                        <div className="flex items-center gap-4">
-                          <SecundaryButton texto="Cadastra-se" />
-                        </div>
-                      </NavbarLandpage>
+          <SecundaryButton texto="Cadastra-se" />
+        </NavbarLandpage>
         <Animation />
         <div className="flex items-center justify-center gap-4 mb-10">
           <PrimaryButton>Sobre</PrimaryButton>

@@ -13,6 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { LoginAuthSchema, LoginAuthSchemaType } from "@/app/login/_schemas/loginAuthSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginUser } from "@/app/login/_actions/loginAction";
+import Link from "next/dist/client/link";
 
 
 export function LoginForm({
@@ -104,9 +105,9 @@ export function LoginForm({
         <Field>
           <FieldDescription className="text-center">
             Não possui uma conta?{" "}
-            <a href="#" className="underline underline-offset-4">
+            <Link href="/register" className="text-white underline-offset-4 hover:text-stone-300">
               Registre-se agora
-            </a>
+            </Link>
           </FieldDescription>
         </Field>
       </FieldGroup>

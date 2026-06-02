@@ -27,8 +27,8 @@ export function DialogDemo({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="md:px-25">
-          Agende seu horário
+        <Button variant="outline" className="md:px-20">
+          Agende seu horário {profissionalName ? `com ${profissionalName}` : ""}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl">

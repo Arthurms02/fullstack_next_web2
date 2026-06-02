@@ -12,7 +12,7 @@ import { registerAuthSchema, RegisterAuthSchemaType } from "@/app/register/_sche
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js"
 import { Controller, useForm } from "react-hook-form"
 import { registerUser } from "@/app/register/_actions/registerActions"
-import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
+import Link from "next/dist/client/link"
 
 
 export function RegisterForm({
@@ -130,7 +130,9 @@ export function RegisterForm({
         </Field>
         <Field>
           <FieldDescription className="px-5 text-center">
-            Já possui uma conta? <a href="#">Faça login</a>
+            Já possui uma conta? <Link href="/login" className="text-white underline-offset-4 hover:text-stone-300">
+              Faça login
+            </Link>
           </FieldDescription>
         </Field>
       </FieldGroup>
