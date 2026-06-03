@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js"
 import { Controller, useForm } from "react-hook-form"
-import { registerUser } from "@/app/register/_actions/registerActions"
+import { registerBarber } from "@/app/register/_actions/registerActions"
 import Link from "next/dist/client/link"
 import { registerBarbeiroSchema , RegisterBarbeiroSchemaType } from "@/app/register/_schemas/registerBarbeiroSchema"
 import { Button } from "@/components/ui/button"
@@ -32,7 +32,7 @@ export default function FormRegisterBarbeiro({
   });
 
   function onSubmit(data: RegisterBarbeiroSchemaType) {
-    registerUser(data);
+    registerBarber(data);
   }
 
   return (
