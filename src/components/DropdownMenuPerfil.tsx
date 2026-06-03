@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/dist/client/link"
+import { signOut } from "next-auth/react";
 
 export function DropdownMenuPerfil() {
   return (
@@ -44,8 +45,10 @@ export function DropdownMenuPerfil() {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive">
+          <Button onClick={() => signOut({callbackUrl: '/'})} variant="outline" className="w-full flex items-center gap-2">
           <LogOutIcon />
           Log out
+          </Button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

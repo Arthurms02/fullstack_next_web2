@@ -3,12 +3,13 @@ import dbConnect from "@/lib/db";
 import Agendamento from "@/models/Agendamento";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
+import type { User } from "@/types/type";
 
 export async function POST(request: Request) {
   try {
-    const session = await getServerSession(authOptions as any);
+    const session = await getServerSession(authOptions);
 
-    if (!session || !session.user) {
+    if (!session) {
       return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 });
     }
 
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Parâmetros "profissionalId" e "dataHora" são obrigatórios' }, { status: 400 });
     }
 
-    const clienteId = (session.user as any).id;
+    const clienteId = (session.id as User).id;
 
     await dbConnect();
 

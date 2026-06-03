@@ -4,10 +4,11 @@ import React, { useState, useRef } from "react";
 import { toast } from "sonner";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { profileSchema, ProfileSchemaType } from "./_schemas/profileSchema";
+import { profileSchema, ProfileSchemaType } from "../_schemas/profileSchema";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import PrimaryButton from "@/components/PrimaryButton";
+import { useProfileStore } from "@/stores/useProfileStore";
 
 
 export default function PerfilFormClient() {
@@ -21,7 +22,7 @@ export default function PerfilFormClient() {
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: "",
-      cpf: "",
+      cnpj: "",
       birthDate: "",
       phone: "",
       email: "",
@@ -33,12 +34,19 @@ export default function PerfilFormClient() {
       complement: "",
       specialties: [],
       bio: "",
+      avatar: "",
+      equipe: [],
     },
   });
+  const { setProfile, setError, setLoading: setStoreLoading , loading} = useProfileStore();
 
   const { fields, append, remove } = useFieldArray({
     control: control,
     name: "specialties",
+  });
+  const { fields: equipeFields, append: appendEquipe } = useFieldArray({
+    control: control,
+    name: "equipe",
   });
 
   const MAX_SPECIALTIES = 3;
@@ -70,11 +78,10 @@ export default function PerfilFormClient() {
     return res.json();
   }
 
-  const [loading, setLoading] = useState(false);
 
   // Função de submissão: se houver imagem em `preview`, faz upload primeiro
   async function onSubmit(data: ProfileSchemaType) {
-    setLoading(true);
+    setStoreLoading(true);;
     try {
       if (preview && preview.startsWith("data:")) {
         // separa metadata e base64
@@ -97,7 +104,7 @@ export default function PerfilFormClient() {
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
-
+      
       try {
         const res = await fetch("/api/perfil", {
           method: "POST",
@@ -106,12 +113,15 @@ export default function PerfilFormClient() {
           signal: controller.signal,
         });
 
+        setProfile(data);
+
         const json = await res.json();
         if (!res.ok) throw new Error(json?.error || "Erro");
         toast.success("Perfil atualizado com sucesso", {
           position: "top-center",
         });
       } catch (err: any) {
+        setError(err?.message || "Erro ao atualizar perfil");
         if (err?.name === "AbortError") {
           toast.error("Tempo de conexão excedido", { position: "top-center" });
         } else {
@@ -119,13 +129,14 @@ export default function PerfilFormClient() {
           toast.error("Erro ao atualizar perfil", { position: "top-center" });
         }
       } finally {
+        setStoreLoading(false);
         clearTimeout(timeoutId);
       }
     } catch (err: any) {
       console.error(err);
       toast.error("Erro ao atualizar perfil", { position: "top-center" });
     } finally {
-      setLoading(false);
+      setStoreLoading(false);
     }
   }
 
@@ -240,13 +251,13 @@ export default function PerfilFormClient() {
           </div>
           <div>
             <Input
-              {...register("cpf")}
-              placeholder="CPF"
+              {...register("cnpj")}
+              placeholder="CNPJ"
               className="bg-stone-500/50"
             />
-            {errors.cpf && (
+            {errors.cnpj && (
               <p className="text-sm text-rose-400 mt-1">
-                {errors.cpf.message as string}
+                {errors.cnpj.message as string}
               </p>
             )}
           </div>
@@ -369,7 +380,8 @@ export default function PerfilFormClient() {
         </div>
       </section>
 
-      <section className="rounded-xl p-6 bg-stone-500/10 border border-white/10 backdrop-blur-lg shadow-lg">
+      <section className="flex flex-col gap-6 rounded-xl p-6 bg-stone-500/10 border border-white/10 backdrop-blur-lg shadow-lg">
+        <div className="flex-1 mr-3">
         <h3 className="text-md font-semibold text-white mb-2">
           Serviços
         </h3>
@@ -377,11 +389,11 @@ export default function PerfilFormClient() {
           Adicione seus serviços. Eles aparecem no seu perfil público.
         </p>
         {fields.map((field, index) => (
-          <div key={field.id} className="flex gap-3 mb-2 items-center">
+          <div key={field.id} className="flex flex-wrap gap-3 mb-2 items-center">
             <Input
               {...register(`specialties.${index}.servico`)}
               placeholder="Serviço (ex: Corte degradê)"
-              className="bg-stone-500/50 w-100"
+              className="bg-stone-500/50 w-50"
             />
             <Input
               {...register(`specialties.${index}.duracao`)}
@@ -396,6 +408,7 @@ export default function PerfilFormClient() {
               Remover
             </PrimaryButton>
           </div>
+          
         ))}
         {fields.length < MAX_SPECIALTIES ? (
           <PrimaryButton
@@ -410,6 +423,19 @@ export default function PerfilFormClient() {
             Limite de {MAX_SPECIALTIES} especialidades atingido
           </div>
         )}
+        </div>
+        <div className="flex-1 flex-col flex-wrap gap-3 items-center">
+          <h3 className="text-md font-semibold text-white mb-2">Equipe</h3>
+          <p className="text-sm w-50 text-stone-300">
+            Se você tem uma equipe, pode buscar seus Barbeiro caso eles tenham perfil na plataforma.
+          </p>
+          <div className="flex-1  gap-3 mt-4">
+          <Input type="search" placeholder="Buscar barbeiros..." className="bg-stone-500/50 w-50 mr-5" />
+          <PrimaryButton type="button" className="mt-2 py-1 px-3 bg-blue-500">
+            Buscar
+          </PrimaryButton>
+          </div>
+        </div>
       </section>
 
       <section className="rounded-xl p-6 bg-stone-500/10 border border-white/10 backdrop-blur-lg shadow-lg">

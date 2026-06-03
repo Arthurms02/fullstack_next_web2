@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -12,8 +14,8 @@ import { Input } from "@/components/ui/input"
 import { Controller, useForm } from "react-hook-form";
 import { LoginAuthSchema, LoginAuthSchemaType } from "@/app/login/_schemas/loginAuthSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginUser } from "@/app/login/_actions/loginAction";
 import Link from "next/dist/client/link";
+import { loginUser } from "../_actions/loginAction";
 
 
 export function LoginForm({
@@ -27,6 +29,7 @@ export function LoginForm({
       password:"",
     },
   });
+
 
   function onSubmit(data: LoginAuthSchemaType) {
     loginUser(data);

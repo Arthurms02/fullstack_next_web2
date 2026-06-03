@@ -5,6 +5,7 @@ import User from "@/models/Usuario";
 import bcrypt from "bcryptjs";
 
 
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -28,7 +29,12 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Senha incorreta");
         }
         // Retorna apenas os campos necessários para a sessão podendo ser personalizado conforme a necessidade de ROLEs ou outras informações
-        return { id: user._id.toString(), name: user.name, email: user.email };
+        return { 
+          id: user._id.toString(),
+          name: user.name, 
+          email: user.email,
+          role: user.role
+         };
       },
     }),
   ],

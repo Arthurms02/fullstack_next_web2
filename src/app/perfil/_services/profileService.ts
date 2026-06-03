@@ -19,30 +19,30 @@ export async function updateProfileService(payload: ProfileSchemaType, userId?: 
     );
 
     // If barber-specific fields provided, update Barbeiro document
-    if (payload.cpf || payload.establishmentName) {
-      // try find existing Barbeiro by user email or cpf
+    if (payload.cnpj || payload.establishmentName) {
+    // try find existing Barbeiro by user email or cnpj
       const update: any = {};
       if (payload.name) update.name = payload.name;
       if (payload.email) update.email = payload.email;
-      if (payload.cpf) update.cpf = payload.cpf;
+      if (payload.cnpj) update.cnpj = payload.cnpj;
       if (payload.establishmentName) update.establishmentName = payload.establishmentName;
 
-      // Try to find by cpf first
+      // Try to find by cnpj first
       let barbeiro = null;
-      if (payload.cpf) barbeiro = await Barbeiro.findOne({ cpf: payload.cpf });
+      if (payload.cnpj) barbeiro = await Barbeiro.findOne({ cnpj: payload.cnpj });
 
       if (!barbeiro && payload.email) barbeiro = await Barbeiro.findOne({ email: payload.email });
 
       if (barbeiro) {
         await Barbeiro.updateOne({ _id: barbeiro._id }, update);
-      } else if (payload.email && payload.name && payload.cpf && payload.establishmentName) {
+      } else if (payload.email && payload.name && payload.cnpj && payload.establishmentName) {
         // If no barber found and enough data, create a lightweight barber record without password
         await Barbeiro.create({
           name: payload.name,
           email: payload.email,
           password: 'changeme',
           establishmentName: payload.establishmentName,
-          cpf: payload.cpf,
+          cnpj: payload.cnpj, // Using cnpj as cnpj for simplicity, adjust as needed
         });
       }
     }

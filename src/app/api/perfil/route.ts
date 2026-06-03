@@ -4,17 +4,18 @@ import { authOptions } from '@/lib/auth';
 import { updateProfile } from '@/app/perfil/_actions/updateProfileAction';
 import { ProfileSchemaType } from '@/app/perfil/_schemas/profileSchema';
 
+
 export async function POST(request: Request){
   try{
-    const session = await getServerSession(authOptions as any);
+    const session = await getServerSession(authOptions);
 
-    if (!session || !session.user) {
+    if (!session) {
       return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 });
     }
 
     const payload: ProfileSchemaType = await request.json();
     // attach user id from session
-    const userId = (session.user as any).id;
+    const userId = session.user?.id as string;
 
     await updateProfile({ ...payload, userId });
 

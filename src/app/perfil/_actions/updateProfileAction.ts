@@ -13,8 +13,8 @@ export async function updateProfile(payload: ProfileSchemaType & { userId?: stri
     throw new Error('Usuário não autenticado');
   }
 
-  if (!parsed.data.cpf && !parsed.data.establishmentName) {
-    throw new Error('Para atualizar o perfil de barbeiro, CPF ou nome do estabelecimento é obrigatório');
+  if (!parsed.data.cnpj && !parsed.data.establishmentName) {
+    throw new Error('Para atualizar o perfil de barbeiro, CNPJ ou nome do estabelecimento é obrigatório');
   }
 
   return await updateProfileService(parsed.data, payload.userId);

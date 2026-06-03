@@ -14,3 +14,13 @@ export async function registerUser(payload: RegisterAuthSchemaType){
 
   await registerUserService(parsed.data);
 }
+
+export async function registerBarber(payload: RegisterAuthSchemaType){
+  const parsed = registerAuthSchema.safeParse(payload);
+  if(!parsed.success){
+    toast.error('Dados de registro inválidos',{ position: "top-center" });
+    return;
+  }
+
+  await registerUserService(parsed.data, true);
+}

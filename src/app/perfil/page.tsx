@@ -1,11 +1,17 @@
-import { redirect } from "next/dist/client/components/navigation";
-import PerfilFormClient from "./PerfilFormClient";
-import Navbar from "@/components/Navbar";
 
-export default function Perfil() {
-  function onSubmit(){
-    redirect('/home');
+import { redirect } from "next/dist/client/components/navigation";
+import PerfilFormClient from "./_components/PerfilFormClient";
+import Navbar from "@/components/Navbar";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth/next";
+
+export default async function Perfil() {
+
+  const session = await getServerSession(authOptions);
+  if (!session) {
+      redirect('/login');
   }
+  
   return (
     <>
     <Navbar />
