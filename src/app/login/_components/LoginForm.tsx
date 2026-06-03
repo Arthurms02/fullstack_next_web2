@@ -13,6 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { LoginAuthSchema, LoginAuthSchemaType } from "@/app/login/_schemas/loginAuthSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginUser } from "@/app/login/_actions/loginAction";
+import Link from "next/link";
 
 
 export function LoginForm({
@@ -74,13 +75,13 @@ export function LoginForm({
             <Field data-invalid={fieldState.invalid}>
               <div className="flex items-center">
                 <FieldLabel htmlFor="form-login" className="font-rye">
-                  Password
+                  Senha
                 </FieldLabel>
                 <a
                   href="#"
                   className="ml-auto text-sm underline-offset-4 hover:underline"
                 >
-                  Forgot your password?
+                  Esqueceu sua senha?
                 </a>
               </div>
               <Input
@@ -97,16 +98,16 @@ export function LoginForm({
         />
         <Field>
           <Button type="submit" form="form-login" className="w-full bg-gradient-to-r from-orange-200 to-amber-950 text-white rounded-sm p-6 shadow-lg hover:from-stone-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
-            Login
+            Entrar
           </Button>
         </Field>
         <FieldSeparator></FieldSeparator>
         <Field>
           <FieldDescription className="text-center">
             Não possui uma conta?{" "}
-            <a href="#" className="underline underline-offset-4">
+            <Link href="/register" className="underline underline-offset-4">
               Registre-se agora
-            </a>
+            </Link>
           </FieldDescription>
         </Field>
       </FieldGroup>

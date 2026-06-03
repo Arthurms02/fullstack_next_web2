@@ -5,10 +5,15 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const payload: RegisterAuthSchemaType = await request.json();
-    await registerUser(payload);
-    return NextResponse.json({ message: 'Usuário registrado com sucesso' }, { status: 201 });
+    const result = await registerUser(payload);
+
+    if (!result.success) {
+      return NextResponse.json({ error: result.message }, { status: 400 });
+    }
+
+    return NextResponse.json({ message: result.message }, { status: 201 });
   } catch (error) {
-    console.error('Error registering user:', error);
-    return NextResponse.json({ error: 'Falha ao registrar usuário' }, { status: 500 });
+    console.error("Error registering user:", error);
+    return NextResponse.json({ error: "Falha ao registrar usuário" }, { status: 500 });
   }
 }
