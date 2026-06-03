@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js"
 import { Controller, useForm } from "react-hook-form"
 import { registerUser } from "@/app/register/_actions/registerActions"
 import Link from "next/dist/client/link"
+import { toast } from "sonner"
 
 
 export function RegisterForm({
@@ -30,8 +31,17 @@ export function RegisterForm({
     },
   });
 
-  function onSubmit(data: RegisterAuthSchemaType) {
-    registerUser(data);
+  async function onSubmit(data: RegisterAuthSchemaType) {
+    try{
+      const result = await registerUser(data);
+      if(result!.success){
+        toast.success('Usuário registrado com sucesso!', { position: "top-center" });
+      } else {
+        toast.error(`Erro ao registrar usuário: ${result!.message}`,{position: "top-center"});
+      }
+    } catch (error) {
+      toast.error(`${error} Ocorreu um erro ao registrar o usuário. Tente novamente.`,{position: "top-center"});
+    }
   }
 
   return (

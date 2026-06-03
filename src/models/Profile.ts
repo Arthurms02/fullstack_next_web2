@@ -5,7 +5,6 @@ const ProfileSchema = new Schema({
   avatar: { type: String },
   phone: { type: String },
   bio: { type: String },
-  barber: { type: Schema.Types.ObjectId, ref: 'Barbeiro' },
 }, { timestamps: true });
 
 const Profile = models.Profile || model('Profile', ProfileSchema);

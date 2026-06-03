@@ -3,19 +3,11 @@ import bcrypt from "bcryptjs";
 import User from "@/models/Usuario";
 import Profile from "@/models/Profile";
 import dbConnect from "@/lib/db";
-import { toast } from "sonner";
 import Barbeiro from "@/models/Barbeiro";
 import { RegisterBarbeiroSchemaType } from "../_schemas/registerBarbeiroSchema";
 
 export async function registerUserService(payload: RegisterAuthSchemaType) {
   await dbConnect();
-
-  const emailExists = await User.findOne({ email: payload.email });
-
-  if (emailExists) {
-    toast.error('Email já registrado',{ position: "top-center" });
-    return;
-  }
 
   const senhaOriginal = payload.password;
 
@@ -25,60 +17,54 @@ export async function registerUserService(payload: RegisterAuthSchemaType) {
       name: payload.name,
       email: payload.email,
       password: hashedPassword,
+      role: 'client',
     });
 
     try {
       await Profile.create({ user: newUser._id });
+      return { success: true, message: 'Usuário registrado com sucesso' };
     } catch (profileErr) {
       // If profile creation fails, remove the created user to avoid inconsistent state
       await User.deleteOne({ _id: newUser._id });
-      toast.error('Erro ao criar perfil. Tente novamente.',{ position: "top-center" });
-      throw profileErr;
+      return { success: false, message: 'Erro ao criar perfil do usuário' };
     }
   } catch (err: any) {
     if (err?.code === 11000) {
-      toast.error('Email já registrado',{ position: "top-center" });
+      return { success: false, message: 'Email já registrado' };
     }
-    throw err;
+    return { success: false, message: 'Erro ao registrar usuário' };
   }
 }
 
 export async function registerBarberService(payload: RegisterBarbeiroSchemaType) {
   await dbConnect();
 
-  const emailExists = await Barbeiro.findOne({ email: payload.email });
-
-  if (emailExists) {
-    toast.error('Email já registrado',{ position: "top-center" });
-    return;
-  }
-
   const senhaOriginal = payload.password;
 
   const hashedPassword = await bcrypt.hash(senhaOriginal, 10);
+
   try {
     const novoBarbeiro = await Barbeiro.create({
       name: payload.name,
       email: payload.email,
       password: hashedPassword,
       cpf: payload.cpf,
-      estabelecimento: payload.establishmentName,
+      establishmentName: payload.establishmentName,
       role: 'barber'
     });
 
     try {
       await Profile.create({ user: novoBarbeiro._id });
+      return { success: true, message: 'Barbeiro registrado com sucesso' };
     } catch (profileErr) {
-      // If profile creation fails, remove the created user to avoid inconsistent state
       await Barbeiro.deleteOne({ _id: novoBarbeiro._id });
-      toast.error('Erro ao criar perfil. Tente novamente.',{ position: "top-center" });
-      throw profileErr;
+      return { success: false, message: 'Erro ao criar perfil do barbeiro' };
     }
   } catch (err: any) {
     if (err?.code === 11000) {
-      toast.error('Email já registrado',{ position: "top-center" });
+      return { success: false, message: 'Email já registrado' };
     }
-    throw err;
+    return { success: false, message: 'Erro ao registrar barbeiro' };
   }
 } 
 

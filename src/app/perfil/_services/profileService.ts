@@ -2,19 +2,25 @@ import { ProfileSchemaType } from '../_schemas/profileSchema';
 import dbConnect from '@/lib/db';
 import Profile from '@/models/Profile';
 import Barbeiro from '@/models/Barbeiro';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
 
 export async function updateProfileService(payload: ProfileSchemaType, userId?: string){
   await dbConnect();
 
   try {
-    if (!userId) {
-      throw new Error('Usuário não autenticado');
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return { success: false, error: 'Usuário não autenticado' };
+    }
+    if(!userId) {
+      return { success: false, error: 'ID do usuário é obrigatório para atualizar perfil' };
     }
 
     // Update or create profile
     const profile = await Profile.findOneAndUpdate(
       { user: userId },
-      { avatar: payload.avatar, phone: payload.phone, bio: payload.bio },
+      { avatar: payload.avatar, phone: payload.phone, bio: payload.bio, establishmentName: payload.establishmentName, cnpj: payload.cnpj },
       { upsert: true, new: true }
     );
 
@@ -29,8 +35,9 @@ export async function updateProfileService(payload: ProfileSchemaType, userId?: 
 
       // Try to find by cnpj first
       let barbeiro = null;
-      if (payload.cnpj) barbeiro = await Barbeiro.findOne({ cnpj: payload.cnpj });
-
+      if (payload.cnpj) {
+        barbeiro = await Barbeiro.findOne({ cnpj: payload.cnpj });
+      }
       if (!barbeiro && payload.email) barbeiro = await Barbeiro.findOne({ email: payload.email });
 
       if (barbeiro) {
@@ -47,9 +54,9 @@ export async function updateProfileService(payload: ProfileSchemaType, userId?: 
       }
     }
 
-    return profile;
+    return { success: true, profile };
   } catch (err) {
     console.error('Erro ao atualizar perfil', err);
-    throw err;
+    return { success: false, error: 'Erro ao atualizar perfil' };
   }
 }

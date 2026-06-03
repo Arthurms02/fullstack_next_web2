@@ -1,50 +1,181 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fullstack Next Web2
 
-## Getting Started
+Aplicação fullstack em Next.js para uma barbearia, com landing page, autenticação de usuários e estrutura inicial para gerenciamento de barbeiros e agendamentos.
 
-First, run the development server:
+O projeto usa o App Router do Next.js, autenticação com NextAuth, validação de formulários com Zod + React Hook Form e persistência de dados com MongoDB via Mongoose.
+
+## Funcionalidades
+
+- Landing page com animações e identidade visual de barbearia.
+- Cadastro de usuários com definição de perfil: `client` ou `barber`.
+- Login com credenciais usando NextAuth.
+- Criptografia de senhas com `bcryptjs`.
+- Página interna `/home` com área para agendamentos e barbeiros cadastrados.
+- Modelos MongoDB para usuários e barbeiros.
+- Componentes reutilizáveis com Tailwind CSS, shadcn/ui, Radix UI e Lucide React.
+
+## Tecnologias
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- NextAuth
+- MongoDB + Mongoose
+- Zod
+- React Hook Form
+- bcryptjs
+- Framer Motion / Motion
+- Three.js, React Three Fiber e Drei
+- shadcn/ui e Radix UI
+
+## Estrutura Principal
+
+```text
+src/
+  app/
+    api/
+      auth/[...nextauth]/route.ts
+      login/route.ts
+      register/route.ts
+    home/page.tsx
+    login/
+    register/
+    signup/
+    perfil/
+    page.tsx
+  components/
+  hooks/
+  lib/
+    auth.ts
+    db.ts
+    utils.ts
+  models/
+    Barbeiro.ts
+    Usuario.ts
+    Agendamento.ts
+```
+
+## Como Rodar o Projeto
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/Arthurms02/fullstack_next_web2.git
+cd fullstack_next_web2
+```
+
+### 2. Instale as dependências
+
+```bash
+npm install
+```
+
+### 3. Configure as variáveis de ambiente
+
+Crie um arquivo `.env.local` na raiz do projeto:
+
+```env
+MONGODB_URI=sua_string_de_conexao_mongodb
+NEXTAUTH_SECRET=sua_chave_secreta
+NEXTAUTH_URL=http://localhost:3000
+```
+
+Para gerar uma chave segura para `NEXTAUTH_SECRET`, você pode usar:
+
+```bash
+openssl rand -base64 32
+```
+
+### 4. Inicie o servidor de desenvolvimento
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Acesse:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts Disponíveis
 
-## Learn More
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Inicia o projeto em modo de desenvolvimento.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Gera a versão de produção.
 
-## Deploy on Vercel
+```bash
+npm run start
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Executa a versão de produção após o build.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+```
 
-## Usar para representar o Banco
+Executa a verificação de lint do projeto.
+
+## Rotas
+
+| Rota | Descrição |
+| --- | --- |
+| `/` | Landing page do projeto |
+| `/home` | Página interna com agendamentos e barbeiros |
+| `/login` | Tela de login |
+| `/register` | Tela de cadastro |
+| `/signup` | Tela adicional de cadastro |
+| `/perfil` | Página de perfil |
+| `/api/register` | Endpoint para registro de usuário |
+| `/api/login` | Endpoint inicial para login |
+| `/api/auth/[...nextauth]` | Rotas do NextAuth |
+
+## Banco de Dados
+
+O projeto utiliza MongoDB com Mongoose. O modelo principal de usuário possui:
+
+- `name`
+- `email`
+- `password`
+- `role`
+- `createdAt`
+- `updatedAt`
+
+O campo `role` aceita os valores:
+
+- `client`
+- `barber`
+
+Também existe um modelo de barbeiro com dados como nome, email, senha, nome do estabelecimento e CPF.
+
+## Fluxo Simplificado
 
 ```mermaid
 flowchart LR
-  Sleep[Sleep] --> Wake{Awake?}
-  Wake -->|No| Sleep
-  Wake -->|Hungry| Snack[Get treat]
-  Wake -->|Not in in Sun?| Move[Move to sun]
-  Wake -->|Human is typing| Keyboard[Sleep on keyboard]
-  Snack --> Sleep
-  Move --> Sleep
-  Keyboard --> Sleep
+  User[Usuário] --> Landing[Landing Page]
+  Landing --> Register[Cadastro]
+  Landing --> Login[Login]
+  Register --> Validation[Validação com Zod]
+  Validation --> Hash[Senha criptografada]
+  Hash --> MongoDB[(MongoDB)]
+  Login --> NextAuth[NextAuth Credentials]
+  NextAuth --> Session[Sessão JWT]
+  Session --> Home[Área interna]
+  Home --> Appointments[Agendamentos]
+  Home --> Barbers[Barbeiros]
 ```
+
+## Observações
+
+- A conexão com o banco depende da variável `MONGODB_URI`.
+- O login principal é feito pelo NextAuth usando o provider de credenciais.
+- Algumas áreas, como agendamentos e listagem real de barbeiros, ainda estão em estrutura inicial e podem ser evoluídas.

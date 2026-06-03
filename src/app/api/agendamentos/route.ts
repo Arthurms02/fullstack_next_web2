@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Parâmetros "profissionalId" e "dataHora" são obrigatórios' }, { status: 400 });
     }
 
-    const clienteId = (session.id as User).id;
+    const clienteId = (session.user as any).id;
 
     await dbConnect();
 

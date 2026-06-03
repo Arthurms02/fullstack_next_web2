@@ -16,6 +16,7 @@ import { LoginAuthSchema, LoginAuthSchemaType } from "@/app/login/_schemas/login
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/dist/client/link";
 import { loginUser } from "../_actions/loginAction";
+import { toast } from "sonner";
 
 
 export function LoginForm({
@@ -32,7 +33,7 @@ export function LoginForm({
 
 
   function onSubmit(data: LoginAuthSchemaType) {
-    loginUser(data);
+    loginUser(data)
   }
 
 

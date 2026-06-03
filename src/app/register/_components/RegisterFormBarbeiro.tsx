@@ -1,3 +1,5 @@
+'use cliente';
+
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js"
 import { Controller, useForm } from "react-hook-form"
 import { registerBarber } from "@/app/register/_actions/registerActions"
@@ -13,11 +15,14 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation";
 
 export default function FormRegisterBarbeiro({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const router = useRouter();
   const form = useForm<RegisterBarbeiroSchemaType>({
     resolver: zodResolver(registerBarbeiroSchema),
     defaultValues:{
@@ -31,8 +36,23 @@ export default function FormRegisterBarbeiro({
     },
   });
 
-  function onSubmit(data: RegisterBarbeiroSchemaType) {
-    registerBarber(data);
+  async function onSubmit(data: RegisterBarbeiroSchemaType) {
+    try{
+      const result = await registerBarber(data);
+      
+      if(result?.success){
+        toast.success('Barbeiro registrado com sucesso!', { position: "top-center" });
+
+        setTimeout(() => {
+          router.push("/login");
+        }, 1500);
+      } else {
+        toast.error(`Erro ao registrar barbeiro: ${result?.message}`, {position: "top-center"});
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Ocorreu um erro ao registrar o barbeiro. Tente novamente.', {position: "top-center"});
+    }
   }
 
   return (

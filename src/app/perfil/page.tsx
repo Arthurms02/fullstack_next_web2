@@ -11,7 +11,9 @@ export default async function Perfil() {
   if (!session) {
       redirect('/login');
   }
-  
+
+
+
   return (
     <>
     <Navbar />
