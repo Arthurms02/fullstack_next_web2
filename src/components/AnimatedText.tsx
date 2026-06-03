@@ -6,7 +6,7 @@ import RotatingText from './reactBits/animatedText/RotatingText';
 export default function AnimatedText() {
   return (
     <LayoutGroup>
-      <motion.div className="flex items-center justify-center mx-auto gap-2 flex-wrap">
+      <motion.div className="flex items-center  text-center justify-center mx-auto gap-2 flex-wrap">
         <motion.h1 className="pt-5 text-5xl font-bold text-white mb-4">
           Independente do seu estilo
         </motion.h1>
@@ -26,8 +26,8 @@ export default function AnimatedText() {
           loop
         />
       </motion.div>
-      <motion.div className="mx-10 flex flex-col items-center justify-center text-xs text-center font-medium">
-        <h2 className="flex w-120 mx-auto text-2xl font-bold text-white flex-wrap">
+      <motion.div className="flex flex-col flex-wrap items-center justify-center text-center font-medium">
+        <h2 className="flex text-2xl w-80 mx-auto font-bold text-white flex-wrap">
           Encontre o barbeiro perfeito para você, agende seu horário online, sem complicações.
         </h2>
       </motion.div>
