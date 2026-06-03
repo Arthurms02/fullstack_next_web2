@@ -17,7 +17,7 @@ export async function POST(request: Request){
 
     const payload: ProfileSchemaType = await request.json();
     // attach user id from session
-    const userId = session.user?.id as string;
+    const userId = (session.user as any).id;
 
     await updateProfile({ ...payload, userId });
 
