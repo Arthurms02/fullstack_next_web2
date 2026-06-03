@@ -44,67 +44,51 @@ export default function PerfilFormClient() {
     control: control,
     name: "specialties",
   });
-  const { fields: equipeFields, append: appendEquipe } = useFieldArray({
-    control: control,
-    name: "equipe",
-  });
 
   const MAX_SPECIALTIES = 3;
   const bio = watch("bio") || "";
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const avatar = watch("avatar") || "";
 
-  // estado para pré-visualização da imagem selecionada
-  const [preview, setPreview] = useState<string | null>(null);
-  // armazena o File selecionado para enviar metadados (type, size)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  function isValidUrl(url: string): boolean {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  }
 
-  // faz upload do base64 para a rota /api/upload e retorna { url }
-  async function uploadBase64Image(
-    base64Data: string,
-    filename: string,
-    contentType?: string,
-    size?: number,
-  ) {
-    const body: any = { filename, data: base64Data };
-    if (contentType) body.contentType = contentType;
-    if (size) body.size = size;
+  function handleAvatarUrlChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const url = e.target.value;
+    
+    if (!url) {
+      return; // Campo vazio, permite
+    }
 
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) throw new Error("Falha no upload da imagem");
-    return res.json();
+    if (!isValidUrl(url)) {
+      toast.error("URL inválida. Digite uma URL completa (ex: https://...)", {
+        position: "top-center",
+      });
+      e.target.value = "";
+      return;
+    }
+
   }
 
 
-  // Função de submissão: se houver imagem em `preview`, faz upload primeiro
   async function onSubmit(data: ProfileSchemaType) {
-    setStoreLoading(true);;
+    setStoreLoading(true);
     try {
-      if (preview && preview.startsWith("data:")) {
-        // separa metadata e base64
-        const commaIndex = preview.indexOf(",");
-        const base64 = preview.substring(commaIndex + 1);
-        const metadata = preview.substring(0, commaIndex);
-        const extMatch = metadata.match(/image\/(png|jpeg|jpg|webp)/);
-        const ext = extMatch ? extMatch[1].replace("jpeg", "jpg") : "png";
-        const filename = `avatar_${Date.now()}.${ext}`;
-        // envia também tipo e tamanho (quando disponíveis) para validação no servidor
-        const json = await uploadBase64Image(
-          base64,
-          filename,
-          selectedFile?.type,
-          selectedFile?.size,
-        );
-        // salva URL retornada no payload para ser persistida no Profile
-        data.avatar = json.url;
+      // ✅ Validar se tem avatar URL
+      if (data.avatar && !isValidUrl(data.avatar)) {
+        toast.error("URL do avatar inválida", { position: "top-center" });
+        setStoreLoading(false);
+        return;
       }
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
-      
+
       try {
         const res = await fetch("/api/perfil", {
           method: "POST",
@@ -140,45 +124,22 @@ export default function PerfilFormClient() {
     }
   }
 
-  // Handler para input file: lê o arquivo e seta `preview` como data URL
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validação de tipo e tamanho (limite: 2MB)
-    const allowed = ["image/png", "image/jpeg", "image/webp"];
-    const maxSize = 2 * 1024 * 1024; // 2MB
-    if (!allowed.includes(file.type)) {
-      toast.error("Formato inválido. Use PNG, JPG ou WEBP.", {
-        position: "top-center",
-      });
-      return;
-    }
-    if (file.size > maxSize) {
-      toast.error("Arquivo muito grande. Máx 2MB.", { position: "top-center" });
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      setPreview(result);
-      setSelectedFile(file);
-    };
-    reader.readAsDataURL(file);
-  }
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <section className="rounded-xl p-6 bg-stone-500/10 border border-white/10 backdrop-blur-lg shadow-lg">
         <div className="flex gap-6 items-center">
           <div className="w-28 h-28 rounded-md bg-amber-500 flex items-center justify-center text-2xl font-bold text-stone-900">
-            {/* se houver preview, mostra a imagem, senão mostra placeholder */}
-            {preview ? (
+            {avatar && isValidUrl(avatar) ? (
               <img
-                src={preview}
+                src={avatar}
                 alt="preview"
                 className="w-full h-full object-cover rounded-md"
+                onError={() => {
+                  toast.error("Erro ao carregar imagem. URL inválida?", {
+                    position: "top-center",
+                  });
+                }}
               />
             ) : (
               "JS"
@@ -188,45 +149,37 @@ export default function PerfilFormClient() {
             <h2 className="text-lg font-medium text-white mb-1">
               Foto de Perfil
             </h2>
-            <p className="text-sm text-stone-300">
-              Faça upload de uma foto sua ou do seu estabelecimento. Formatos
-              aceitos: JPG, PNG, WEBP.
+            <p className="text-sm text-stone-300 mb-4">
+              Cole a URL de uma imagem (JPG, PNG, WEBP).
+              Exemplo: https://example.com/minha-foto.jpg
             </p>
-            <div className="mt-3 flex items-center gap-3">
-              {/* input file escondido; botão aciona o seletor */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
+            <div className="flex items-center gap-3">
+              <Input
+                {...register("avatar")}
+                placeholder="https://example.com/foto.jpg"
+                className="bg-stone-500/50"
+                onChange={handleAvatarUrlChange}
               />
-              <PrimaryButton
-                type="button"
-                className="py-2 px-4"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                Selecionar foto
-              </PrimaryButton>
-              {preview && (
+              {avatar && (
                 <PrimaryButton
                   type="button"
                   className="py-2 px-4 bg-stone-700"
                   onClick={() => {
-                    setPreview(null);
-                    setSelectedFile(null);
-                    if (fileInputRef.current) fileInputRef.current.value = "";
+                    // Limpar o campo avatar
+                    const form = document.querySelector('form');
+                    if (form) {
+                      form.reset();
+                    }
                   }}
                 >
-                  Remover foto
+                  Limpar
                 </PrimaryButton>
               )}
             </div>
-            {/* mostra nome/tamanho do arquivo selecionado */}
-            {selectedFile && (
-              <div className="mt-2 text-sm text-stone-300">
-                {selectedFile.name} — {(selectedFile.size / 1024).toFixed(0)} KB
-              </div>
+            {errors.avatar && (
+              <p className="text-sm text-rose-400 mt-1">
+                {errors.avatar.message as string}
+              </p>
             )}
           </div>
         </div>

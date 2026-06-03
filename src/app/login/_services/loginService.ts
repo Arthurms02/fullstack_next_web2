@@ -13,7 +13,7 @@ export async function loginUserService(payload: LoginAuthSchemaType){
   });
 
   if (result?.error) {
-    toast.error('Login invalido: ' + result.error,{ position: "top-center" });
+    return { success: false, message: result.error };
   }else {
     toast.success('Login realizado com sucesso',{ position: "top-center" });
     redirect('/home');

@@ -17,5 +17,14 @@ export type Profile = {
   avatar?: string;
 }
 
+export type Barber = {
+  id: string;
+  name: string;
+  avatar?: string;
+  status?: string;
+  description?: string;
+  establishmentName?: string;
+};
+
 
 
